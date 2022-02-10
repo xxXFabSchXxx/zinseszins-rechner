@@ -48,7 +48,7 @@ function createTableHeader(text) {
 }
 function createTableData(text) {
     let td = document.createElement('td')
-    td.setAttribute('align','center')
+    td.setAttribute('align', 'center')
     td.appendChild(document.createTextNode(text))
     return td;
 }
@@ -117,14 +117,36 @@ function buttonClick() {
     let gehaltsZinsenStart = Number(document.getElementById('gehaltsZinsenStart').value);
     let gehaltsZinsenEnde = Number(document.getElementById('gehaltsZinsenEnde').value);
     let anzahlSimualtion = Number(document.getElementById('anzahlSimualtion').value);
+    let customzahlEingabe = Number(document.getElementById('customzahlEingabe').value);
+    let gespeicherteErgebnise = [];
 
     let berechneteTabelle = berechnen(vermoegen, dauer, anfangsSparRate, zinsenStart, zinsenEnde, gehaltsZinsenStart, gehaltsZinsenEnde);
     for (let i = 0; i < anzahlSimualtion; i++) {
-        berechnen(vermoegen, dauer, anfangsSparRate, zinsenStart, zinsenEnde, gehaltsZinsenStart, gehaltsZinsenEnde);
+        let berechnungen = berechnen(vermoegen, dauer, anfangsSparRate, zinsenStart, zinsenEnde, gehaltsZinsenStart, gehaltsZinsenEnde);
+        let zinsenListe = berechnungen[0];
+        gespeicherteErgebnise[i] = zinsenListe[zinsenListe.length - 1]
     }
+
+    gespeicherteErgebnise.sort(function (a, b) { return a - b; });
+
+    let min1 = perzentil(gespeicherteErgebnise, 1);
+    let min5 = perzentil(gespeicherteErgebnise, 5);
+    let max5 = perzentil(gespeicherteErgebnise, 95);
+    let max1 = perzentil(gespeicherteErgebnise, 99);
+    let customzahlberechnen = 100 - customzahlEingabe
+    let customzahl = perzentil(gespeicherteErgebnise, customzahlberechnen);
 
     createTable(dauer, berechneteTabelle[0], berechneteTabelle[1], berechneteTabelle[2], berechneteTabelle[3])
 
+    let ergebnisSatz = document.getElementById('ergebnisSatz')
+    ergebnisSatz.innerHTML = '<p>Mit einer Warscheinlichkeit von <strong>99%</strong> bekommt man mindestens <strong>' + runde(min1, 2) + '€</strong>.</p>'
+        + '<p>Mit einer Warscheinlichkeit von <strong>95%</strong> bekommt man mindestens <strong>' + runde(min5, 2) + '€</strong>.</p>'
+        + '<p>Mit einer Warscheinlichkeit von <strong>5%</strong> bekommt man mindestens <strong>' + runde(max5, 2) + '€</strong>.</p>'
+        + '<p> Mit einer Warscheinlichkeit von <strong>1%</strong> bekommt man mindestens <strong>' + runde(max1, 2) + '€</strong>.</p>'
+        + '<p> Mit einer Warscheinlichkeit von <strong>' + customzahlEingabe + '%</strong> bekommt man mindestens <strong>' + runde(customzahl, 2) + '€</strong>.</p>';
+
+    let ergebnis = document.getElementById('ergebnis')
+    ergebnis.style.display = 'block'
 
     return false
 }
