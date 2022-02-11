@@ -62,12 +62,12 @@ function createTableBodyPart(jahr, vermoegen, zinsen, sparRate, sparRatenErhoeun
 
     return tr;
 }
-function createTable(dauer, zinsenListe, zinsProzentsatz, gehaltsListe, gehaltsProzentsatz) {
+function createTable(dauer, zinsenListe, zinsProzentsatz, gehaltsListe, gehaltsProzentsatz, waehrung) {
     let tr = document.createElement('tr')
     tr.appendChild(createTableHeader('Jahr'))
-    tr.appendChild(createTableHeader('Vermögen [€]'))
+    tr.appendChild(createTableHeader(`Vermögen [${waehrung}]`))
     tr.appendChild(createTableHeader('Prozentsatz [%]'))
-    tr.appendChild(createTableHeader('Spar Rate [€]'))
+    tr.appendChild(createTableHeader(`Spar Rate [${waehrung}]`))
     tr.appendChild(createTableHeader('Prozentsatz [%]'))
 
 
@@ -137,7 +137,10 @@ function buttonClick() {
     let customzahlEingabe = Number(document.getElementById('customzahlEingabe').value);
     let erhoehungszeitraum = Number(document.getElementById('erhoehungszeitraum').value);
     let gesuchteNummer = Number(document.getElementById('gesuchteNummer').value)
+    let waehrung = document.getElementById('waehrung').value;
     let gespeicherteErgebnise = [];
+
+    console.log(waehrung)
 
     let berechneteTabelle = berechnen(vermoegen, dauer, anfangsSparRate, zinsenStart, zinsenEnde, gehaltsZinsenStart, gehaltsZinsenEnde);
     for (let i = 0; i < anzahlSimulationen; i++) {
@@ -155,18 +158,18 @@ function buttonClick() {
     let customzahlberechnen = 100 - customzahlEingabe
     let customzahl = perzentil(gespeicherteErgebnise, customzahlberechnen);
 
-    createTable(dauer, berechneteTabelle[0], berechneteTabelle[1], berechneteTabelle[2], berechneteTabelle[3])
+    createTable(dauer, berechneteTabelle[0], berechneteTabelle[1], berechneteTabelle[2], berechneteTabelle[3], waehrung)
 
     let indexNummer = sucheIndex(gespeicherteErgebnise, gesuchteNummer)
     let warscheinlichkeit = (anzahlSimulationen - indexNummer) / anzahlSimulationen * 100;
 
     let ergebnisSatz = document.getElementById('ergebnisSatz')
-    ergebnisSatz.innerHTML = '<p>In <strong>99%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(min1) + '€</strong>.</p>'
-        + '<p>In <strong>95%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(min5) + '€</strong>.</p>'
-        + '<p>In <strong>5%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(max5) + '€</strong>.</p>'
-        + '<p> In <strong>1%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(max1) + '€</strong>.</p>'
-        + '<p> In <strong>' + customzahlEingabe + '%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(customzahl) + '€</strong>.</p>'
-        + '<p> In <strong>' + runde(warscheinlichkeit, 2) + '%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(gesuchteNummer) + '€</strong>.</p>';
+    ergebnisSatz.innerHTML = '<p>In <strong>99%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(min1) + waehrung + '</strong>.</p>'
+        + '<p>In <strong>95%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(min5) + waehrung + '</strong>.</p>'
+        + '<p>In <strong>5%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(max5) + waehrung + '</strong>.</p>'
+        + '<p> In <strong>1%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(max1) + waehrung + '</strong>.</p>'
+        + '<p> In <strong><u>' + customzahlEingabe + '%</strong></u> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(customzahl) + waehrung + '</strong>.</p>'
+        + '<p> In <strong>' + runde(warscheinlichkeit, 2) + '%</strong> der Simulationen bekommt man mindestens <strong><u>' + verkuerzeZahl(gesuchteNummer) + waehrung + '</strong></u>.</p>';
 
     let ergebnis = document.getElementById('ergebnis')
     ergebnis.style.display = 'block'
