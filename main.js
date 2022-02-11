@@ -39,7 +39,7 @@ function sucheIndex(liste, gesuchteNummer) {
             return i;
         }
     }
-    return -1;
+    return liste.length;
 }
 function createTableHeader(text) {
     let th = document.createElement('th')
@@ -80,7 +80,24 @@ function createTable(dauer, zinsenListe, zinsProzentsatz, gehaltsListe, gehaltsP
 
     }
 }
+function verkuerzeZahl(zahl) {
+    if (zahl < 1000) {
+        return zahl;
+    } else {
+        if (zahl > 999999) {
+            let zahlAufM = runde(runde(zahl, - 5) / 1000000, 1)
+            return zahlAufM + 'M';
+        } else {
+            if (zahl > 999) {
+                let zahlAufK = (runde(zahl, -3) / 1000);
+                return zahlAufK + 'k';
+            }
+        }
+    }
+}
 function berechnen(vermoegen, dauer, anfangsSparRate, zinsenStart, zinsenEnde, gehaltsZinsenStart, gehaltsZinsenEnde) {
+
+    let erhoehungszeitraum = Number(document.getElementById('erhoehungszeitraum').value);
 
     let zinsenListe = [];
     let gehaltsListe = [];
@@ -96,7 +113,7 @@ function berechnen(vermoegen, dauer, anfangsSparRate, zinsenStart, zinsenEnde, g
 
         zinsProzentsatz[i] = erstelleZufallszahl(zinsenStart, zinsenEnde);
 
-        if (i % 2 == 0) {
+        if (i % erhoehungszeitraum == 0) {
             gehaltsProzentsatz[i] = erstelleZufallszahl(gehaltsZinsenStart, gehaltsZinsenEnde);
         } else {
             gehaltsProzentsatz[i] = 0;
@@ -116,12 +133,14 @@ function buttonClick() {
     let zinsenEnde = Number(document.getElementById('zinsenEnde').value);
     let gehaltsZinsenStart = Number(document.getElementById('gehaltsZinsenStart').value);
     let gehaltsZinsenEnde = Number(document.getElementById('gehaltsZinsenEnde').value);
-    let anzahlSimualtion = Number(document.getElementById('anzahlSimualtion').value);
+    let anzahlSimulationen = Number(document.getElementById('anzahlSimulationen').value);
     let customzahlEingabe = Number(document.getElementById('customzahlEingabe').value);
+    let erhoehungszeitraum = Number(document.getElementById('erhoehungszeitraum').value);
+    let gesuchteNummer = Number(document.getElementById('gesuchteNummer').value)
     let gespeicherteErgebnise = [];
 
     let berechneteTabelle = berechnen(vermoegen, dauer, anfangsSparRate, zinsenStart, zinsenEnde, gehaltsZinsenStart, gehaltsZinsenEnde);
-    for (let i = 0; i < anzahlSimualtion; i++) {
+    for (let i = 0; i < anzahlSimulationen; i++) {
         let berechnungen = berechnen(vermoegen, dauer, anfangsSparRate, zinsenStart, zinsenEnde, gehaltsZinsenStart, gehaltsZinsenEnde);
         let zinsenListe = berechnungen[0];
         gespeicherteErgebnise[i] = zinsenListe[zinsenListe.length - 1]
@@ -138,15 +157,31 @@ function buttonClick() {
 
     createTable(dauer, berechneteTabelle[0], berechneteTabelle[1], berechneteTabelle[2], berechneteTabelle[3])
 
+    let indexNummer = sucheIndex(gespeicherteErgebnise, gesuchteNummer)
+    let warscheinlichkeit = (anzahlSimulationen - indexNummer) / anzahlSimulationen * 100;
+
     let ergebnisSatz = document.getElementById('ergebnisSatz')
-    ergebnisSatz.innerHTML = '<p>Mit einer Warscheinlichkeit von <strong>99%</strong> bekommt man mindestens <strong>' + runde(min1, 2) + '€</strong>.</p>'
-        + '<p>Mit einer Warscheinlichkeit von <strong>95%</strong> bekommt man mindestens <strong>' + runde(min5, 2) + '€</strong>.</p>'
-        + '<p>Mit einer Warscheinlichkeit von <strong>5%</strong> bekommt man mindestens <strong>' + runde(max5, 2) + '€</strong>.</p>'
-        + '<p> Mit einer Warscheinlichkeit von <strong>1%</strong> bekommt man mindestens <strong>' + runde(max1, 2) + '€</strong>.</p>'
-        + '<p> Mit einer Warscheinlichkeit von <strong>' + customzahlEingabe + '%</strong> bekommt man mindestens <strong>' + runde(customzahl, 2) + '€</strong>.</p>';
+    ergebnisSatz.innerHTML = '<p>In <strong>99%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(min1) + '€</strong>.</p>'
+        + '<p>In <strong>95%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(min5) + '€</strong>.</p>'
+        + '<p>In <strong>5%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(max5) + '€</strong>.</p>'
+        + '<p> In <strong>1%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(max1) + '€</strong>.</p>'
+        + '<p> In <strong>' + customzahlEingabe + '%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(customzahl) + '€</strong>.</p>'
+        + '<p> In <strong>' + runde(warscheinlichkeit, 2) + '%</strong> der Simulationen bekommt man mindestens <strong>' + verkuerzeZahl(gesuchteNummer) + '€</strong>.</p>';
 
     let ergebnis = document.getElementById('ergebnis')
     ergebnis.style.display = 'block'
 
     return false
 }
+
+
+
+
+
+/* '<p>In <strong>99%</strong> der Simulationen bekommt man mindestens <strong>' + runde(min1, -3) + '€</strong>.</p>'
+    + '<p>In <strong>95%</strong> der Simulationen bekommt man mindestens <strong>' + runde(min5, 2) + '€</strong>.</p>'
+    + '<p>In <strong>5%</strong> der Simulationen bekommt man mindestens <strong>' + runde(max5, 2) + '€</strong>.</p>'
+    + '<p> In <strong>1%</strong> der Simulationen bekommt man mindestens <strong>' + runde(max1, 2) + '€</strong>.</p>'
+    + '<p> In <strong>' + customzahlEingabe + '%</strong> der Simulationen bekommt man mindestens <strong>' + runde(customzahl, 2) + '€</strong>.</p>'
+    + '<p> In <strong>' + warscheinlichkeit + '%</strong> der Simualtionen bekommt man mindestens <strong>' + gesuchteNummer + '€</strong>.</p>';
+    */

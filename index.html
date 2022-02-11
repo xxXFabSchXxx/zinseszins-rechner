@@ -33,7 +33,7 @@
                 </div>
                 <div class="eingabe">
                     <label for="dauer">Dauer</label>
-                    <input placeholder="Dauer" id="dauer" type="number" value="10" min="1" class="form-control mr-2">
+                    <input placeholder="Dauer" id="dauer" type="number" value="15" min="1" class="form-control mr-2">
                 </div>
                 <div class="eingabe">
                     <label for="anfangsSparRate">Anfangs Sparrate</label>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="eingabe">
                     <label for="zinsenStart">Zinsen Start</label>
-                    <input placeholder="Zinsen Start" id="zinsenStart" type="number" value="10"
+                    <input placeholder="Zinsen Start" id="zinsenStart" type="number" value="-15"
                         class="form-control mr-2" step="0.1">
                 </div>
                 <div class="eingabe">
@@ -52,23 +52,38 @@
                 </div>
                 <div class="eingabe">
                     <label for="gehaltsZinsenStart">Sparraten Erhöung Start</label>
-                    <input placeholder="Sparraten Erhöung" id="gehaltsZinsenStart" type="number" value="10"
+                    <input placeholder="Sparraten Erhöung" id="gehaltsZinsenStart" type="number" value="4"
                         class="form-control mr-2" step="0.1">
                 </div>
                 <div class="eingabe">
                     <label for="gehaltsZinsenEnde">Sparraten Erhöung Ende</label>
-                    <input placeholder="Sparraten Erhöung Ende" id="gehaltsZinsenEnde" type="number" value="20"
+                    <input placeholder="Sparraten Erhöung Ende" id="gehaltsZinsenEnde" type="number" value="6"
                         class=" form-control mr-2" step="0.1">
                 </div>
                 <div class="eingabe">
-                    <label for="anzahlSimualtion">Anzahl Simulationen</label>
-                    <input placeholder="Anzahl Simulationen" id="anzahlSimualtion" type="number" value="100" min="1"
+                    <label for="anzahlSimulationen">Anzahl Simulationen</label>
+                    <input placeholder="Anzahl Simulationen" id="anzahlSimulationen" type="number" value="1000" min="1"
                         max="100000" value="1" class="form-control mr-2">
                 </div>
                 <div class="eingabe">
-                    <label for="customzahlEingabe">Top/Min %</label>
-                    <input placeholder="Top/Min %" id="customzahlEingabe" type="number" value="99.9" min="0.01"
+                    <label for="customzahlEingabe">Warscheinlichkeit</label>
+                    <input placeholder="Warscheinlichkeit" id="customzahlEingabe" type="number" value="50" min="0.01"
                         max="99.99" class="form-control mr-2" step="0.01">
+                </div>
+
+                <div class="eingabe">
+                    <label for="gesuchteNummer">Suche Wert an Stelle</label>
+                    <input placeholder="Suche Wer an Stelle" id="gesuchteNummer" type="number" value="1000000" min="0.01"
+                         class="form-control mr-2" step="0.01">
+                </div>
+
+                <div class="eingabe">
+                <label for="erhoehungszeitraum">Erhöhungszeitraum</label>
+                <select id="erhoehungszeitraum" name="Erhöhungszeitraum">
+                    <option value="1">Jährlich</option>
+                    <option value="2" selected >Alle 2 Jahre</option>
+                    <option value="3">Alle 3 Jahre</option>
+                </select>
                 </div>
 
                 <button id="berechnen" type="submit" class="btn btn-dark">
